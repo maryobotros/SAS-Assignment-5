@@ -1,0 +1,44 @@
+# install packages
+library(tidyverse)
+library(janitor)
+library(skimr)
+library(readxl)
+
+# 1, read in data
+grades <- read_xlsx('Student Grades.xlsx') %>% 
+  clean_names()
+
+# 2, collapse into one record per student per semester
+grades2 <- grades %>% 
+  mutate(ec_flag = ifelse(assignment == 'EXTRA CREDIT', 1, 0)) %>% 
+  group_by(studentid, semester) %>% 
+  mutate(lowest_score = min(ifelse(ec_flag == 0, score, 101))) %>% 
+  mutate(total_points = sum(ifelse(ec_flag == 0, score, 0)),
+         total_points_no_low = total_points - lowest_score,
+         ec_flag = ifelse(sum(ec_flag > 0) & assignment == 'FINAL', 1, 0)) %>% 
+  filter(assignment == 'FINAL') %>% 
+  select(studentid, semester, ec_flag, total_points, total_points_no_low)
+  
+# 3, collapse into one record per student
+grades3 <- grades2 %>% 
+  mutate(total_points = ifelse(ec_flag == 1, total_points + 3, total_points),
+         total_points_no_low = ifelse(ec_flag == 1, total_points_no_low + 3, total_points_no_low)) %>% 
+  pivot_wider(id_cols = c(studentid, semester),
+              names_from = semester,
+              values_from = c(total_points, total_points_no_low)) %>% 
+  rename(fall_semester_raw = total_points_FALL,
+         fall_semester_adj = total_points_no_low_FALL,
+         spring_semester_raw = total_points_SPRING,
+         spring_semester_adj = total_points_no_low_SPRING) %>% 
+  mutate(fall_semester_raw = fall_semester_raw/100,
+         fall_semester_adj = fall_semester_adj/90,
+         spring_semester_raw = spring_semester_raw/100,
+         spring_semester_adj = spring_semester_adj/90)
+
+# 4, pivot longer
+grades4 <- grades3 %>% 
+  pivot_longer(cols = c(fall_semester_raw, fall_semester_adj,
+                        spring_semester_raw, spring_semester_adj),
+               names_to = 'score_type',
+               values_to = 'percentage')
+

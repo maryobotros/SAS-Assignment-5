@@ -1,0 +1,32 @@
+{
+    "id": "E3DF6DA1",
+    "path": null,
+    "project_path": null,
+    "type": "r_dataframe",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1627664228663.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "expression": "grades3",
+        "caption": "grades3",
+        "totalObservations": "5",
+        "displayedObservations": "5",
+        "variables": "5",
+        "cacheKey": "E0D6AC57",
+        "object": "grades3",
+        "environment": "",
+        "contentUrl": "grid_resource/gridviewer.html?env=&obj=grades3&cache_key=E0D6AC57&max_cols=50",
+        "preview": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 4189029841723747941,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1627664228663,
+    "read_only": false,
+    "read_only_alternatives": []
+}
